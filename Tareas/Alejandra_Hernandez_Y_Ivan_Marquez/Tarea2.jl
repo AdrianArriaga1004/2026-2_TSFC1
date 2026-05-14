@@ -1,5 +1,12 @@
 # # Tarea 2: Diferenciación automática
 
+# Incluimos Pkg para registrar nuestros paquetes
+using Pkg
+Pkg.activate("./Tareas/Alejandra_Hernandez_Y_Ivan_Marquez")
+Pkg.add("Test")
+
+using Test
+
 # ## Ejercicio 1
 #
 # a. Definan una estructura en Julia `Dual` que represente a los números duales;
@@ -92,8 +99,6 @@ end
 #Para comparar, comenzaré definiendo == para duales
 
 Base.:(==)(a::Dual, b::Dual) = a.fun == b.fun && a.der == b.der
-
-using Test
 
 @testset "Pruebas Ejercicio 1" begin 
     x = Dual(2,5)  
@@ -196,8 +201,6 @@ end
 #
 # - Al igual que antes, construyan algún conjunto de pruebas que muestre, de manera
 # sencilla, que lo que hicieron da lo que uno esperaría obtener.
-
-using Test 
 
 Base.:(≈)(a::Dual, b::Dual) = a.fun ≈ b.fun && a.der ≈ b.der
 
