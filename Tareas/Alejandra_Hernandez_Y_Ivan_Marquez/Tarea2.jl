@@ -55,17 +55,17 @@ end
 # la documentación de Julia tiene más información sobre esto.
 
 import Base: +
-+(a::Dual, b::Real) = +(a, convert(Dual, b))
-+(a::Real, b::Dual) = +(convert(Dual, a), b)
++(a::Dual, b::Real) = +(a, Dual(b))
++(a::Real, b::Dual) = +(Dual(a), b)
 import Base: -
--(a::Dual, b::Real) = -(a, convert(Dual, b))
--(a::Real, b::Dual) = -(convert(Dual, a), b)
+-(a::Dual, b::Real) = -(a, Dual(b))
+-(a::Real, b::Dual) = -(Dual(a), b)
 import Base: *
-*(a::Dual, b::Real) = *(a, convert(Dual, b))
-*(a::Real, b::Dual) = *(convert(Dual, a), b)
+*(a::Dual, b::Real) = *(a, Dual(b))
+*(a::Real, b::Dual) = *(Dual(a), b)
 import Base: /
-/(a::Dual, b::Real) = /(a, convert(Dual, b))
-/(a::Real, b::Dual) = /(convert(Dual, a), b)
+/(a::Dual, b::Real) = /(a, Dual(b))
+/(a::Real, b::Dual) = /(Dual(a), b)
 
 
 # e. Definan las funciones `fun` y `der` que, al ser aplicadas a un `Dual` devuelven
