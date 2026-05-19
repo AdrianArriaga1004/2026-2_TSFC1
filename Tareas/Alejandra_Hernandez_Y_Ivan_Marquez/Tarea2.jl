@@ -144,12 +144,7 @@ end
 
 # OBTENIENDO LA DERIVADA DE LA FUNCIÓN 
 
-function Df(x)
-    """
-    Esta función es f(x) pero tomando a dual(x) como argumento 
-    """
-    return ((3*dual(x)*dual(x))-(8*dual(x))+1)/((7*dual(x)*dual(x)*dual(x))-1)
-end
+f(x) = (3*x*x-8*x+1)/(7*x*x*x-1) 
 
 #DERIVADA ANALÍTICA 
 
@@ -160,7 +155,7 @@ function DfA(x)
     return (((6*x)-8)/((7*x^3)-1)) - ((((3*x^2)-(8*x)+1)*(21*x^2))/((7*x^3)-1)^2)
 end
 
-D_dual = Df(2)    #Derivada hecha usando como argumento a los duales, i.e f(dual(x))
+D_dual = f(dual(2))    #Derivada hecha usando como argumento a los duales, i.e f(dual(x))
 D_analitica = DfA(2)            #Derivada analítica f'(x)
 
 der(D_dual)-D_analitica
