@@ -202,18 +202,16 @@ end
 # - Al igual que antes, construyan algún conjunto de pruebas que muestre, de manera
 # sencilla, que lo que hicieron da lo que uno esperaría obtener.
 
-Base.:(≈)(a::Dual, b::Dual) = a.fun ≈ b.fun && a.der ≈ b.der
-
-
 @testset "Pruebas ejercicio 3" begin 
     x = Dual(4,12)
+
     
-    @test sin(x) ≈ der(sen(x))
-    @test cos(x) ≈ Dual(cos(4),-sin(4)*12)
-    @test log(x) ≈ Dual(log(4), 12/4)
-    @test exp(x) ≈ Dual(exp(4),exp(4)*12)
-    @test tan(x) ≈ Dual(tan(4),(sec(4)^2)*12)
-    @test x^2 == x*x
-    @test x^3 == x*x*x
-    @test sqrt(x) == Dual(sqrt(4),(1/2)*(1/sqrt(4)*12))
+    @test sin(x) == Dual(sin(x.fun),fun(cos(x))*x.der)
+    @test cos(x) == Dual(cos(x.fun),-fun(sin(x))*x.der)
+    @test log(x) == Dual(log(x.fun),x.der/x.fun)
+    @test exp(x) == Dual(exp(x.fun) ,exp(x.fun)*x.der)
+    @test tan(x) == Dual(tan(x.fun), ((sec(x.fun))^2)*x.der)
+    @test x^2 == Dual(x.fun^2, 2*x.fun*x.der)
+    @test x^3 == Dual(x.fun^3, 3*((x.fun)^2)*x.der )
+    @test sqrt(x) == Dual(sqrt(x.fun),(1/2)*(1/sqrt(x.fun)*x.der))
 end
