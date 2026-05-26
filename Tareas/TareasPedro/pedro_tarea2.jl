@@ -124,7 +124,7 @@ using Test
 
     #3. División
     f = u / u   # 1
-    g = u / v
+    @test_throws AssertionError("Error! Para u/w donde u y w son duales, w.fun debe de ser distinto de cero.") u/v
     @test fun(f) ≈ 1.0
     @test der(f) ≈ 0.0
 
