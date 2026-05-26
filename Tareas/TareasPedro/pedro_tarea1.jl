@@ -133,27 +133,16 @@ plot_pascal_impares(1024)
 # plano. Implementen el siguiente algoritmo.
 
 #=
-Ocuparemos X_1 = [0,0], X_2 = [1,0] y X_3 = [0.5,sqrt(3/4)], que son las coordenadas de un triángulo
-equilátero de lado 1. 
-=#
-begin
-    X_1 = [0.0, 0.0]
-    X_2 = [1.0, 0.0]
-    X_3 = [0.5, sqrt(3/4)]
-end
-
-
-# a. Elijan al azar un punto dentro del triángulo equilátero, que llamaré $Y_0$.
-# Es la condición inicial.
-
-
-#=
-Escogemos 2 flotantes entre 0 y 1, uno para la coordenada x y uno para la coordenada y, si
-el de la coordenada "y" se sale del triángulo lo redefinimos hasta que cumpla la condición
-y1 < tan(π/3)*x1 (tan(π/3)=sqrt(3)) y que y1< tan(π/3)*(x1-1), para que esté dentro del tríangulo equilátero.
+Primero definimos la función para escoger al azar un número dentro
+de un triángulo equilatero en las coordenadas [0,0],[1,0] y [0.5, sqrt(3/4)]
 =#
 
 function escoger_2fotantes_triangulo()
+    """
+    Escogemos 2 flotantes entre 0 y 1, uno para la coordenada x y uno para la coordenada y, si
+    el de la coordenada "y" se sale del triángulo lo redefinimos hasta que cumpla la condición
+    y1 < tan(π/3)*x1 (tan(π/3)=sqrt(3)) y que y1< tan(π/3)*(x1-1), para que esté dentro del tríangulo equilátero.
+    """
     x1 = rand()
     y1 = rand()
     while y1 >= sqrt(3)*x1 || y1 >= -sqrt(3)*(x1 - 1)
@@ -162,45 +151,67 @@ function escoger_2fotantes_triangulo()
     return [x1,y1]
 end
 
-Y_0 = escoger_2fotantes_triangulo()
+function triangulo_un_medio(n::Int)
+    #=
+    Ocuparemos X_1 = [0,0], X_2 = [1,0] y X_3 = [0.5,sqrt(3/4)], que son las coordenadas de un triángulo
+    equilátero de lado 1. 
+    =#
+    begin
+        X_1 = [0.0, 0.0]
+        X_2 = [1.0, 0.0]
+        X_3 = [0.5, sqrt(3/4)]
+    end
+    @assert n > 2 "El número de iteraciones debe ser mayor que 2"
+
+    # a. Elijan al azar un punto dentro del triángulo equilátero, que llamaré $Y_0$.
+    # Es la condición inicial.
 
 
-# b. Elijan al azar uno de los vértices $X_1$, $X_2$ y $X_3$, que llamaré
-# $A_0$.
-#
-A_0 = rand([X_1, X_2, X_3 ])
-# c. Obtengan el punto medio de $Y_0$ y $A_0$; el
-# resultado lo etiquetaremos $Y_1$. Guarden el valor de $Y_1$.
 
-Y_1 = (Y_0 + A_0)/2
 
-#
-# d. Repitan el algoritmo (pasos b y c), paso b para obtener $A_r$, y c para
-# obtener $Y_{r+1}$ usando como el punto medio de $A_r$ y
-# $Y_{r}$ (obtenido antes), guardando los iterados.
-#
-#=
-Vamos a guardar todos los iterados A_r en un vector de vectores A y todas las Y_r en un vector de
-vectores Y:
+    Y_0 = escoger_2fotantes_triangulo()
 
-Primero guardamos lo que ya tenemos:
-=#
-begin
-    Y = [Y_0, Y_1]
-    Yx = [Y_0[1], Y_1[1]]
-    Yy = [Y_0[2], Y_1[2]]
+
+    # b. Elijan al azar uno de los vértices $X_1$, $X_2$ y $X_3$, que llamaré
+    # $A_0$.
+    #
+    A_0 = rand([X_1, X_2, X_3 ])
+    # c. Obtengan el punto medio de $Y_0$ y $A_0$; el
+    # resultado lo etiquetaremos $Y_1$. Guarden el valor de $Y_1$.
+
+    Y_1 = (Y_0 + A_0)/2
+
+    #
+    # d. Repitan el algoritmo (pasos b y c), paso b para obtener $A_r$, y c para
+    # obtener $Y_{r+1}$ usando como el punto medio de $A_r$ y
+    # $Y_{r}$ (obtenido antes), guardando los iterados.
+    #
+    #=
+    Vamos a guardar todos los iterados A_r en un vector de vectores A y todas las Y_r en un vector de
+    vectores Y:
+
+    Primero guardamos lo que ya tenemos:
+    =#
+    begin
+        Y = [Y_0, Y_1]
+        Yx = [Y_0[1], Y_1[1]]
+        Yy = [Y_0[2], Y_1[2]]
+    end
+
+    for i in 1:n
+        a = rand([X_1, X_2, X_3]) # Paso b. Encontramos A_i
+        y_new = (Y[end] + a) / 2 # Paso c. Guardamos Y_{i+1}
+        push!(Yx, y_new[1]) # Guardamos la coordenada x de Y_{i+1}
+        push!(Yy, y_new[2]) # Guardamos la coordenada y de Y_{i+1}
+        push!(Y,y_new) # Guardamos y_new en Y para que se actualice Y[end]
+    end
+    return Yx,Yy
 end
 
-for i in 1:10000
-    a = rand([X_1, X_2, X_3]) # Paso b. Encontramos A_i
-    y_new = (Y[end] + a) / 2 # Paso c. Guardamos Y_{i+1}
-    push!(Yx, y_new[1]) # Guardamos la coordenada x de Y_{i+1}
-    push!(Yy, y_new[2]) # Guardamos la coordenada y de Y_{i+1}
-end
 
 # e. Grafiquen todos los iterados $Y_n$ que guardaron, considerando
 # muuuuchos puntos.
-
+Yx, Yy = triangulo_un_medio(10000)
 scatter(Yx,Yy, 
     ms = 1, msw = 0.1,
     aspect_ratio = :equal,
@@ -214,42 +225,46 @@ scatter(Yx,Yy,
 # de la distancia entre el vértice elegido al azar y el iterado $Y_n$.
 #
 
-#=
-Ocuparemos X_1 = [0,0], X_2 = [1,0] y X_3 = [0.5,sqrt(3/4)], que son las coordenadas de un triángulo
-equilátero de lado 1. 
-=#
-begin
-    X_1 = [0.0, 0.0]
-    X_2 = [1.0, 0.0]
-    X_3 = [0.5, sqrt(3/4)]
-end
 
-function triangulo_un_tercio(p1::Vector,p2::Vector,p3::Vector,n::Int)
-    #=
+function triangulo_un_tercio(n::Int)
+    """
     Función que utiliza los 3 puntos del triángulo equilatero para que 
     hacer todo el procedimiento del problema 2 en una sola función a n número
     de iteraciones. 
+    """
+
+    #=
+    Ocuparemos X_1 = [0,0], X_2 = [1,0] y X_3 = [0.5,sqrt(3/4)], que son las coordenadas de un triángulo
+    equilátero de lado 1. 
     =#
-    @assert n > 2 "El número de iteraciones debe ser mayor que 2"
-    Y_03 = escoger_2fotantes_triangulo()
-    A_03 = rand([p1, p2, p3 ])
-    Y_13 = (Y_03 + A_03)/3 # Tomar el punto tercio
-    # Ahora, vamos a guardar todas componentes de los puntos Y_r3 en las listas Yx3 y Yy3.
-    Yx3 = [Y_03[1], Y_13[1]]
-    Yy3 = [Y_03[2], Y_13[2]]
-    for i in 1:(n-1)
-        a = rand([X_1, X_2, X_3]) # Paso b. Calculamos A_i3
-        y_new = (Y[end] + a) / 3 #Encontramos punto tercio. Guardamos Y_{i+1}3
-        push!(Yx, y_new[1]) # Guardamos la coordenada x de Y_{i+1}3
-        push!(Yy, y_new[2]) # Guardamos la coordenada y de Y_{i+1}3
+    begin
+        X_1 = [0.0, 0.0]
+        X_2 = [1.0, 0.0]
+        X_3 = [0.5, sqrt(3/4)]
     end
+    vertices = [X_1,X_2,X_3]
+ 
+    @assert n > 2 "El número de iteraciones debe ser mayor que 2"
+    Y_03 = escoger_2fotantes_triangulo() # Escogemos un punto al azar dentro del triángulo.
+    # Ahora, vamos a guardar todas componentes de los puntos Y_r3 en las listas Yx3 y Yy3.
+    Y3 = [Y_03]
+    Yx3 = [Y_03[1]]
+    Yy3 = [Y_03[2]]
+    for i in 1:n
+        a = rand(vertices) # Escogemos un vertice al azar
+        y_new = (Y3[end] + 2*a) / 3 #Encontramos punto tercio.
+        push!(Yx3, y_new[1]) # Guardamos la coordenada x de Y_{i+1}3
+        push!(Yy3, y_new[2]) # Guardamos la coordenada y de Y_{i+1}3
+        push!(Y3, y_new)
+    end
+
     return Yx3,Yy3
 end
-Yx3,Yy3 = triangulo_un_tercio(X_1,X_2,X_3,100000)
+Yx3,Yy3 = triangulo_un_tercio(10000)
 
 #Graficando los Y_{r}3
 
-scatter(Yx3,Yy3, ms = 0.5, msw = 0.1,
+scatter(Yx3,Yy3, ms = 0.5, msw = 2,
     aspect_ratio = :equal,
     color = :blue, legend=:none,
     framestyle = :none)
